@@ -1,0 +1,167 @@
+#include <stdio.h>
+
+#define SIZE 100
+
+int tree[SIZE];
+
+// Initialize the tree with -1 (indicating empty nodes)
+void initialize() {
+    for(int i = 0; i < SIZE; i++) {
+        tree[i] = -1;
+    }
+}
+
+// Insert a key into the BST
+void insert(int key) {
+    int index = 0;
+    while (index < SIZE && tree[index] != -1) {
+        if (key < tree[index]) {
+            index = 2 * index + 1;
+        } else {
+            index = 2 * index + 2;
+        }
+    }
+    if (index < SIZE) {
+        tree[index] = key;
+    } else {
+        printf("Tree is full\n");
+    }
+}
+
+// Search for a key in the BST
+int search(int key) {
+    int index = 0;
+    while (index < SIZE && tree[index] != -1) {
+        if (tree[index] == key) {
+            return index;
+        } else if (key < tree[index]) {
+            index = 2 * index + 1;
+        } else {
+            index = 2 * index + 2;
+        }
+    }
+    return -1;
+}
+
+// Find the minimum value node starting from index
+int findMin(int index) {
+    while (index < SIZE && 2 * index + 1 < SIZE && tree[2 * index + 1] != -1) {
+        index = 2 * index + 1;
+    }
+    return index;
+}
+
+// Delete a key from the BST
+void delete(int key) {
+    int index = search(key);
+    if (index == -1) {
+        printf("Key not found\n");
+        return;
+    }
+    // Case 1: Node with only one child or no child
+    if (2 * index + 1 >= SIZE || tree[2 * index + 1] == -1) {
+        int temp = (2 * index + 2 < SIZE) ? 2 * index + 2 : -1;
+        if (temp < SIZE) {
+            tree[index] = (temp < SIZE && tree[temp] != -1) ? tree[temp] : -1;
+            if (temp < SIZE) tree[temp] = -1;
+        } else {
+            tree[index] = -1;
+        }
+    } else if (2 * index + 2 >= SIZE || tree[2 * index + 2] == -1) {
+        int temp = 2 * index + 1;
+        if (temp < SIZE) {
+            tree[index] = (temp < SIZE && tree[temp] != -1) ? tree[temp] : -1;
+            if (temp < SIZE) tree[temp] = -1;
+        } else {
+            tree[index] = -1;
+        }
+    } 
+    // Case 2: Node with two children
+    else {
+        int minIndex = findMin(2 * index + 2);
+        tree[index] = tree[minIndex];
+        delete(tree[minIndex]);
+    }
+}
+
+// Inorder traversal
+void inorder(int index) {
+    if (index < SIZE && tree[index] != -1) {
+        inorder(2 * index + 1);
+        printf("%d ", tree[index]);
+        inorder(2 * index + 2);
+    }
+}
+
+// Preorder traversal
+void preorder(int index) {
+    if (index < SIZE && tree[index] != -1) {
+        printf("%d ", tree[index]);
+        preorder(2 * index + 1);
+        preorder(2 * index + 2);
+    }
+}
+
+// Postorder traversal
+void postorder(int index) {
+    if (index < SIZE && tree[index] != -1) {
+        postorder(2 * index + 1);
+        postorder(2 * index + 2);
+        printf("%d ", tree[index]);
+    }
+}
+
+// Display the tree using inorder traversal
+void display() {
+    printf("Inorder traversal: ");
+    inorder(0);
+    printf("\n");
+}
+
+int main() {
+    initialize();
+    
+    int choice, key;
+    while(1) {
+        printf("\nBinary Search Tree Operations:\n");
+        printf("1. Insert\n");
+        printf("2. Search\n");
+        printf("3. Delete\n");
+        printf("4. Display\n");
+        printf("5. Exit\n");
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
+
+        switch(choice) {
+            case 1:
+                printf("Enter the key to insert: ");
+                scanf("%d", &key);
+                insert(key);
+                break;
+            case 2:
+                printf("Enter the key to search: ");
+                scanf("%d", &key);
+                int index = search(key);
+                if(index != -1) {
+                    printf("Key %d found at index %d\n", key, index);
+                } else {
+                    printf("Key %d not found\n", key);
+                }
+                break;
+            case 3:
+                printf("Enter the key to delete: ");
+                scanf("%d", &key);
+                delete(key);
+                break;
+            case 4:
+                display();
+                break;
+            case 5:
+                return 0;
+            default:
+                printf("Invalid choice\n");
+        }
+    }
+
+    return 0;
+}
