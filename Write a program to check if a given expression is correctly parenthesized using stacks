@@ -1,0 +1,100 @@
+#include <stdio.h>
+#include <string.h>
+#define max 15
+char stack[max];
+int top = -1, i;
+void push(char);
+char pop();
+void display();
+int main()
+{
+    char expression[max], temp;
+    display();
+    int count = 1;
+    printf("\n Enter an expression..\n");
+    scanf("%s", &expression);
+    for (i = 0; i < strlen(expression); i++)
+    {
+        if (expression[i] == '(' || expression[i] == '{' || expression[i] == '[')
+        {
+            push(expression[i]);
+        }
+        if (expression[i] == ')' || expression[i] == '}' || expression[i] == ']')
+        {
+            if (top == -1)
+            {
+                count = 0;
+            }
+            else
+            {
+                temp = pop();
+                if (expression[i] == ')' && (temp == '{' || temp == '['))
+                {
+                    count = 0;
+                }
+                if (expression[i] == '}' && (temp == '(' || temp == '['))
+                {
+                    count = 0;
+                }
+                if (expression[i] == ']' && (temp == '(' || temp == '{'))
+                {
+                    count = 0;
+                }
+            }
+        }
+    }
+    if (top >= 0)
+    {
+        count = 0;
+    }
+    if (count == 1)
+    {
+        printf("\n valid Expression..");
+    }
+    else
+    {
+        printf("\n not valid expression..\n");
+    }
+}
+
+void push(char c)
+{
+
+    if (top == max - 1)
+    {
+        printf("\n overflow...");
+    }
+    else
+    {
+        top = top + 1;
+        stack[top] = c;
+    }
+    printf("\n");
+}
+
+char pop()
+{
+    if (top == -1)
+    {
+        printf("\n underflow...");
+    }
+    else
+    {
+        return (stack[top--]);
+    }
+}
+
+void display()
+{
+    if (top == -1)
+    {
+        printf("No elements in stack..");
+    }
+    else
+    {
+        for (i = 0; i < max; i++)
+        {
+            printf("%s", stack[i]);
+        }
+    }
+}
