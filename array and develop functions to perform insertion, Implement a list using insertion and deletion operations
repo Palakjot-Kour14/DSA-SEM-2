@@ -1,0 +1,126 @@
+#include <stdio.h>
+#include <stdbool.h>
+
+#define SIZE 100
+
+int tree[SIZE];
+
+// Initialize the tree with -1 (indicating empty nodes)
+void initialize() {
+    for(int i = 0; i < SIZE; i++) {
+        tree[i] = -1;
+    }
+}
+
+// Insert a key into the tree
+void insert(int key) {
+    for(int i = 0; i < SIZE; i++) {
+        if(tree[i] == -1) {
+            tree[i] = key;
+            return;
+        }
+    }
+    printf("Tree is full\n");
+}
+
+// Search for a key in the tree
+int search(int key) {
+    for(int i = 0; i < SIZE; i++) {
+        if(tree[i] == key) {
+            return i;
+        }
+    }
+    return -1;
+}
+
+// Delete a key from the tree
+void delete(int key) {
+    int index = search(key);
+    if(index == -1) {
+        printf("Key not found\n");
+        return;
+    }
+    tree[index] = -1;
+}
+
+// Inorder traversal
+void inorder(int index) {
+    if(index < SIZE && tree[index] != -1) {
+        inorder(2 * index + 1);
+        printf("%d ", tree[index]);
+        inorder(2 * index + 2);
+    }
+}
+
+// Preorder traversal
+void preorder(int index) {
+    if(index < SIZE && tree[index] != -1) {
+        printf("%d ", tree[index]);
+        preorder(2 * index + 1);
+        preorder(2 * index + 2);
+    }
+}
+
+// Postorder traversal
+void postorder(int index) {
+    if(index < SIZE && tree[index] != -1) {
+        postorder(2 * index + 1);
+        postorder(2 * index + 2);
+        printf("%d ", tree[index]);
+    }
+}
+
+// Display the tree using inorder traversal
+void display() {
+    printf("Inorder traversal: ");
+    inorder(0);
+    printf("\n");
+}
+
+int main() {
+    initialize();
+    
+    int choice, key;
+    while(1) {
+        printf("\nBinary Tree Operations:\n");
+        printf("1. Insert\n");
+        printf("2. Search\n");
+        printf("3. Delete\n");
+        printf("4. Display\n");
+        printf("5. Exit\n");
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
+
+        switch(choice) {
+            case 1:
+                printf("Enter the key to insert: ");
+                scanf("%d", &key);
+                insert(key);
+                break;
+            case 2:
+                printf("Enter the key to search: ");
+                scanf("%d", &key);
+                int index = search(key);
+                if(index != -1) {
+                    printf("Key %d found at index %d\n", key, index);
+                } else {
+                    printf("Key %d not found\n", key);
+                }
+                break;
+            case 3:
+                printf("Enter the key to delete: ");
+                scanf("%d", &key);
+                delete(key);
+                break;
+            case 4:
+                display();
+                break;
+            case 5:
+                return 0;
+            default:
+                printf("Invalid choice\n");
+        }
+    }
+
+    return 0;
+}
