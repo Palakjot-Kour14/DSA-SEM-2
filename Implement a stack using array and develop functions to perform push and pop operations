@@ -1,0 +1,89 @@
+#include<stdio.h>
+void push();
+void pop();
+int stack[100],max,i,top=-1,choice;
+void push()
+{
+    int val;
+    if(top==max-1) 
+    {
+        printf("Overflow...");
+    }
+    else
+    {
+        printf("Push the elements into stack...\n");
+        while(top<max-1)
+        {
+           top=top+1;
+           printf("Enter the %d index value:",top);
+           scanf("%d",&val);
+           stack[top]=val;
+        }
+        printf("\nThe elements inside the stack are...");
+        for(i=top;i>=0;i--)
+        {
+           printf("%d\n",stack[i]);
+        }
+    }
+}
+void pop()
+{
+    int c;
+    if(top==-1)
+    {
+        printf("Underflow...");
+    }
+    else
+    {
+        printf("\n No. of elements to be deleted");
+        scanf("%d",&c);
+        if(c>max)
+        {
+            printf("\n No enough elements to be deleted");
+
+        }
+        else
+        {
+            top-=c;
+            printf("the elements are deleted");
+            if(top==-1)
+            {
+                printf("\n there are no elements left in stack..");
+            }
+            else
+            {
+                printf("\n the elements after stack pop operation are :-");
+                for(i=top;i>=0;i--)
+                {
+                    printf("%d\n",stack[i]);
+                }
+            }
+        }
+    }
+}
+int main()
+{
+    printf("\n enter no. of elements to push into stacks: ");
+    scanf("%d",&max);
+    while(1)
+    {
+        printf("\n 1. Push \n 2. Pop \n 3. Exit \n");
+        printf("Enter your choice:\n ");
+        scanf("%d",&choice);
+        switch(choice)
+        {
+            case 1:
+            push();
+            break;
+            case 2:
+            pop();
+            break;
+            case 3:
+            printf("\n Exiting...");
+            return 0;
+            default:
+            printf("\n Invalid choice.....");
+        }
+    }
+    return 0;
+}
