@@ -1,0 +1,120 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+// Node structure for the linked list
+struct Node {
+    int data;
+    int priority;
+    struct Node* next;
+};
+
+// Priority Queue structure
+struct PriorityQueue {
+    struct Node *front;
+};
+
+// Function to create a new node
+struct Node* createNode(int data, int priority) {
+    struct Node* node = (struct Node*)malloc(sizeof(struct Node));
+    node->data = data;
+    node->priority = priority;
+    node->next = NULL;
+    return node;
+}
+
+// Function to create a new priority queue
+struct PriorityQueue* createPriorityQueue() {
+    struct PriorityQueue* priorityQueue = (struct PriorityQueue*)malloc(sizeof(struct PriorityQueue));
+    priorityQueue->front = NULL;
+    return priorityQueue;
+}
+
+// Function to enqueue an element to the priority queue
+void enqueue(struct PriorityQueue* pq, int data, int priority) {
+    struct Node* newNode = createNode(data, priority);
+    
+    // If queue is empty or priority of new node is higher than front, insert at the beginning
+    if (pq->front == NULL || priority < pq->front->priority) {
+        newNode->next = pq->front;
+        pq->front = newNode;
+    } else {
+        // Otherwise, traverse the queue to find the right position to insert
+        struct Node* current = pq->front;
+        while (current->next != NULL && current->next->priority <= priority) {
+            current = current->next;
+        }
+        newNode->next = current->next;
+        current->next = newNode;
+    }
+}
+
+// Function to dequeue an element from the priority queue
+int dequeue(struct PriorityQueue* pq) {
+    // If queue is empty, return -1
+    if (pq->front == NULL)
+        return -1;
+    
+    // Store data from front, move front to next node and free the previous front node
+    struct Node* temp = pq->front;
+    int data = temp->data;
+    pq->front = pq->front->next;
+    free(temp);
+    return data;
+}
+
+// Function to display the elements in the priority queue
+void displayPriorityQueue(struct PriorityQueue* pq) {
+    struct Node* current = pq->front;
+    if (current == NULL) {
+        printf("Priority queue is empty\n");
+        return;
+    }
+    
+    printf("Priority queue elements:\n");
+    while (current != NULL) {
+        printf("Data: %d, Priority: %d\n", current->data, current->priority);
+        current = current->next;
+    }
+}
+
+// Main function to test the implementation
+int main() {
+    struct PriorityQueue* pq = createPriorityQueue();
+    int num, priority, choice;
+    
+    do {
+        printf("1. Enqueue\n");
+        printf("2. Dequeue\n");
+        printf("3. Display\n");
+        printf("4. Exit\n");
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
+        
+        switch(choice) {
+            case 1:
+                printf("Enter number to enqueue: ");
+                scanf("%d", &num);
+                printf("Enter priority: ");
+                scanf("%d", &priority);
+                enqueue(pq, num, priority);
+                break;
+            case 2:
+                num = dequeue(pq);
+                if (num != -1)
+                    printf("%d dequeued from priority queue\n", num);
+                else
+                    printf("Priority queue is empty\n");
+                break;
+            case 3:
+                displayPriorityQueue(pq);
+                break;
+            case 4:
+                printf("Exiting...\n");
+                break;
+            default:
+                printf("Invalid choice\n");
+        }
+    } while (choice != 4);
+    
+    return 0;
+}
